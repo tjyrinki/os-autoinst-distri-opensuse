@@ -1,6 +1,9 @@
 ---
 description: 'JeOS Quartely Update test suite - test version. Maintainer: tjyrinki.'
 name: 'jeos-kvm-jeos-qr@uefi-virtio-vga ( qemu )'
+settings:
+  flavor: "JeOS-for-kvm-and-xen-QR"
+  desktop: "text"
 schedule:
   - jeos/grub2
   - jeos/firstrun
