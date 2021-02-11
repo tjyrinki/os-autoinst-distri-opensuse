@@ -1,7 +1,7 @@
 ---
 name: qam-minimal
 schedule:
-- installation/bootloader_start
+- installation/bootloader
 - installation/welcome
 - installation/accept_license
 - '{{disk_activation}}'
