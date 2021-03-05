@@ -41,6 +41,33 @@ conditional_schedule:
       15-SP2:
         - console/openssl_nodejs
         - console/golang
+        - security_389ds_server:
+            testsuite: null
+            settings:
+                  #BOOT_HDD_IMAGE: '1'
+                  #START_AFTER_TEST: create_hdd_textmode
+                  #HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%@%MACHINE%.qcow2'
+                WORKER_CLASS: tap
+                  #DESKTOP: textmode
+                NICTYPE: tap
+                VIDEOMODE: text
+                HOSTNAME: 'server'
+                USERNAME: 'wilber'
+                YAML_SCHEDULE: schedule/security/389ds_sssd.yaml
+        - security_389ds_sssd_client:
+            testsuite: null
+            settings:
+                  #BOOT_HDD_IMAGE: '1'
+                  #START_AFTER_TEST: create_hdd_textmode
+                  #HDD_1: '%DISTRI%-%VERSION%-%ARCH%-%BUILD%-%DESKTOP%@%MACHINE%.qcow2'
+                WORKER_CLASS: tap
+                  #DESKTOP: textmode
+                NICTYPE: tap
+                PARALLEL_WITH: security_389ds_server
+                VIDEOMODE: text
+                HOSTNAME: 'client'
+                USERNAME: 'wilber'
+                YAML_SCHEDULE: schedule/security/389ds_sssd.yaml
         - '{{arch_specific}}'
       15-SP1:
         - console/openssl_nodejs
