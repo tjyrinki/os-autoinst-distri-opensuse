@@ -15,7 +15,6 @@
   <li><a href="#SYNOPSIS">SYNOPSIS</a>
     <ul>
       <li><a href="#handle_login_prompt">handle_login_prompt</a></li>
-      <li><a href="#redirection_init">redirection_init</a></li>
       <li><a href="#set_serial_term_prompt">set_serial_term_prompt</a></li>
       <li><a href="#connect_target_to_serial">connect_target_to_serial</a></li>
       <li><a href="#disconnect_target_from_serial">disconnect_target_from_serial</a></li>
@@ -26,21 +25,15 @@
 
 <h1 id="SYNOPSIS">SYNOPSIS</h1>
 
-<p>Library that enables console redirection and file transfers from worker based VM to another host. Can be used for cases where worker VM is not the target host for API calls and command execution, but serves only as a jumphost.</p>
+<p>Library that enables console redirection and file transfers from worker based VM to another host. Can be used for cases where worker VM is not the target host for API calls and command execution, but serves only as a jumphost. Console redirection is achieved by ssh remote port forwarding and redirecting remote VM ssh session stdin and stdout outputs into serial terminal of the worker VM.</p>
+
+<p><b>USAGE:</b> 1. Set mandatory OpenQA parameters (they can be as well provided directly as named arguments in functions): - REDIRECT_DESTINATION_USER: SSH user for remote SUT - REDIRECT_DESTINATION_IP: IP address for remote SUT 2. Establish console redirection to SUT host by calling function <b>connect_target_to_serial</b> - all test code is now transparently executed on SUT instead of worker VM - from OpenQA perspective SUT is the worker VM 3. Disable console redirection from SUT host by calling function <b>disconnect_target_from_serial</b></p>
 
 <h2 id="handle_login_prompt">handle_login_prompt</h2>
 
 <pre><code>handle_login_prompt();</code></pre>
 
-<p><b>ssh_user</b>: Login user</p>
-
 <p>Detects if login prompt appears and types the password. In case of ssh keys being in place and command prompt appears, the function does not type anything.</p>
-
-<h2 id="redirection_init">redirection_init</h2>
-
-<pre><code>redirection_init();</code></pre>
-
-<p>Do preparation before redirecting console. Gets base VM id and initial setup. This is required to be done only once at the beginning of the whole test. If you have a multi machine setup, execute this on each worker VM.</p>
 
 <h2 id="set_serial_term_prompt">set_serial_term_prompt</h2>
 
@@ -50,29 +43,27 @@
 
 <h2 id="connect_target_to_serial">connect_target_to_serial</h2>
 
-<pre><code>connect_target_to_serial([ssh_user=&gt;ssh_user, target_ip=&gt;$target_ip]);</code></pre>
+<pre><code>connect_target_to_serial( [, ssh_user=&gt;ssh_user, destination_ip=&gt;$destination_ip]);</code></pre>
 
-<p><b>ssh_user</b>: Login user - default value is defined by OpenQA parameter REDIRECT_TARGET_USER</p>
+<p><b>ssh_user</b>: SSH login user for <b>destination_ip</b> - default value is defined by OpenQA parameter REDIRECT_DESTINATION_USER</p>
 
-<p><b>target_ip</b>: Target host IP - default value is defined by OpenQA parameter REDIRECT_TARGET_IP</p>
+<p><b>destination_ip</b>: Destination host IP - default value is defined by OpenQA parameter REDIRECT_DESTINATION_IP</p>
 
-<p>Establishes ssh connection to target and redirects serial output to serial concole on worker VM. This allows OpenQA access to command return codes and output for evaulation by standard API call.</p>
+<p><b>fail_ok</b>: Do not die, return 0 instead. Good for verifying if redirection works.</p>
+
+<p>Establishes ssh connection to destination host and redirects serial output to serial console on worker VM. Connection activates remote port forwarding of OpenQA QEMUPORT+1. This allows running standard OpenQA modules directly on a remote host accessed from worker VM via SSH. Returns 1 if redirection was successful, or dies if redirection fails. If <b>fail_ok</b> is set to true, function does not fail, but returns 0.</p>
 
 <h2 id="disconnect_target_from_serial">disconnect_target_from_serial</h2>
 
-<pre><code>disconnect_target_from_serial([worker_machine_id=$worker_machine_id]);</code></pre>
-
-<p><b>worker_machine_id</b>: Target host IP - default value is defined by OpenQA parameter WORKER_VM_ID from redirect_init()</p>
+<pre><code>disconnect_target_from_serial();</code></pre>
 
 <p>Disconnects target from serial console by typing &#39;exit&#39; command until host machine ID matches ID of the worker VM.</p>
 
 <h2 id="check_serial_redirection">check_serial_redirection</h2>
 
-<pre><code>check_serial_redirection([worker_machine_id=$worker_machine_id]);</code></pre>
+<pre><code>check_serial_redirection();</code></pre>
 
-<p><b>worker_machine_id</b>: Target host IP - default value is defined by OpenQA parameter WORKER_VM_ID from redirect_init()</p>
-
-<p>Compares current machine-id to the worker VM ID either defined by WORKER_VM_ID variable or positional argument. Machine ID is used instead of IP addr since cloud VM IP might not be visible from the inside (for example via &#39;ip a&#39;)</p>
+<p>Checks if serial redirection is currently active by comparing worker VM machine id against id returned from serial console. VM ID is collected by opening &#39;log-console&#39; which is not redirected.</p>
 
 
 </body>
