@@ -8,3 +8,10 @@ schedule:
     - security/cc/remove_bridge_network
     - security/cc/cc_audit_test_setup
     - shutdown/shutdown
+    - '{{s390}}'
+
+conditional_schedule:
+    s390:
+        ARCH:
+            s390x:
+              - shutdown/svirt_upload_assets
