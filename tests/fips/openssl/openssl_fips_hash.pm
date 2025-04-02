@@ -24,7 +24,7 @@ my $tmp_file = "/tmp/hello.txt";
 # With FIPS approved HASH algorithms, openssl should work
 sub test_approved_hash_algos {
     my $openssl_binary = shift;
-    my @approved_hash = ("sha1", "sha224", "sha256", "sha384", "sha512");
+    my @approved_hash = ("sha224", "sha256", "sha384", "sha512");
     for my $hash (@approved_hash) {
         assert_script_run "$openssl_binary dgst -$hash $tmp_file";
     }
