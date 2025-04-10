@@ -12,6 +12,7 @@ use testapi;
 use utils;
 use lockapi;
 use mmapi;
+use version_utils 'has_selinux_by_default';
 use krb5crypt;    # Import public variables
 
 sub run {
@@ -26,6 +27,12 @@ sub run {
     assert_script_run "cat /etc/sysconfig/nfs |& tee /dev/$serialdev";
     assert_script_run "mkdir -p $nfs_expdir && touch $nfs_expdir/$nfs_fname ";
     assert_script_run "chown -R 1000:100 $nfs_expdir";
+    if (has_selinux_by_default) {
+        assert_script_run("semanage fcontext -a -t nfs_t $nfs_expdir");
+        assert_script_run("semanage fcontext -a -t nfs_t $nfs_expdir/$nfs_fname");
+        assert_script_run("restorecon -R -v $nfs_expdir");
+    }
+
     assert_script_run "echo '$nfs_expdir *(rw,sec=sys:krb5:krb5i:krb5p,no_subtree_check,all_squash,anonuid=1000,anongid=100,sync)' >> /etc/exports";
 
     # Add principal for NFS service and add it to server's keytable

@@ -13,6 +13,7 @@ use strict;
 use warnings;
 use testapi;
 use utils;
+use version_utils 'has_selinux_by_default';
 
 use base 'consoletest';
 
@@ -51,8 +52,9 @@ our $tst = 'tester';
 our $pass_t = 'Tester_pass';    # Test user password
 
 # NFSv4 authentication with krb5 testing
-our $nfs_expdir = '/tmp/nfsdir';
-our $nfs_mntdir = '/tmp/mntdir';
+my $nfs_path = has_selinux_by_default ? "/home/bernhard" : "/tmp";
+our $nfs_expdir = "$nfs_path/nfsdir";
+our $nfs_mntdir = "$nfs_path/mntdir";
 our $nfs_fname = 'foo';
 
 # Common codes for krb5 server and client setup
