@@ -16,7 +16,6 @@ use eal4_test;
 use Data::Dumper;
 use version_utils 'is_sle';
 use Utils::Architectures 'is_s390x';
-use serial_terminal 'select_serial_terminal';
 
 # List of known safe processes that can have DBus services
 my @allowed_processes = qw(
@@ -74,7 +73,7 @@ sub is_dynamic_name {
 
 sub run {
     my ($self) = shift;
-    select_serial_terminal;
+    select_console 'root-console';
 
     # Run the test
     my $output_dbus_send = script_output('/bin/dbus-send --system --print-reply --dest=org.freedesktop.DBus --type=method_call /org/freedesktop/DBUS org.freedesktop.DBus.ListNames');

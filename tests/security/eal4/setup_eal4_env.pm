@@ -13,12 +13,11 @@ use warnings;
 use testapi;
 use utils;
 use eal4_test;
-use serial_terminal 'select_serial_terminal';
 
 sub run {
     my ($self) = shift;
 
-    select_serial_terminal;
+    select_console 'root-console';
 
     zypper_call('in wget gcc make curl');
 

@@ -15,12 +15,11 @@ use utils;
 use eal4_test;
 use Mojo::Util 'trim';
 use Data::Dumper;
-use serial_terminal 'select_serial_terminal';
 
 sub run {
     my ($self) = shift;
 
-    select_serial_terminal;
+    select_console 'root-console';
 
     # Install the required packages
     zypper_call('in glib2-devel libffi-devel');

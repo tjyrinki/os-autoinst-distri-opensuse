@@ -13,18 +13,17 @@ use warnings;
 use testapi;
 use utils;
 use eal4_test;
-use serial_terminal 'select_serial_terminal';
 
 sub run {
     my ($self) = shift;
 
-    select_serial_terminal;
+    select_console 'root-console';
 
     # Install the required packages
     zypper_call('in libopenssl-devel libgcrypt-devel');
 
     my $test_dir = '/root/eval/drng';
-    # Compile gather_random_data
+    # Complile gather_random_data
     my $exe_file = 'gather_random_data';
     assert_script_run("cd $eal4_test::code_dir");
     assert_script_run("gcc -o $exe_file -lcrypto -lssl -lgcrypt gather_random_data.c");

@@ -12,12 +12,11 @@ use strict;
 use warnings;
 use testapi;
 use utils;
-use serial_terminal 'select_serial_terminal';
 
 sub run {
     my ($self) = shift;
 
-    select_serial_terminal;
+    select_console 'root-console';
 
     my $output = script_output('find -L /etc -perm -g+w,o+w');
 

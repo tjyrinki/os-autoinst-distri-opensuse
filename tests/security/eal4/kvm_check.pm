@@ -12,12 +12,11 @@ use strict;
 use warnings;
 use testapi;
 use utils;
-use serial_terminal 'select_serial_terminal';
 
 sub run {
     my ($self) = shift;
 
-    select_serial_terminal;
+    select_console 'root-console';
 
     # Install the required packages
     zypper_call('in libvirt');
